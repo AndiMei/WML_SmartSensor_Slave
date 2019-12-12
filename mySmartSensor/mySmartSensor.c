@@ -7,7 +7,7 @@
 
 #include "mySmartSensor.h"
 
-unsigned char Kirim='B';
+unsigned char Kirim='0';
 unsigned char Terima='0';
 
 
@@ -249,5 +249,4 @@ void calibrateAuto(void){
 	calibrate_S0(0,0,0);
 	calibrate_S1(0,0,0);
 	calibrate_S2(0,0,0);
-
 }
