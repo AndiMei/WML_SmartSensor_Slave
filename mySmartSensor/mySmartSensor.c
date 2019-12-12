@@ -114,24 +114,24 @@ void SmartSensor(void){
 
 	/* Calibrate all sensor	*/
 	case 0x0D:{
-		calibrate_S2(&TH2, 0, 0);
-		Kirim = TH2;
+		calibrateAll();
+		Kirim = 'A';
 	}break;
 
 	/* Auto calibrate	*/
 	case 0x0E:{
-		calibrate_S2(&TH2, 0, 0);
-		Kirim = TH2;
+		calibrateAuto();
+		Kirim = 'O';
 	}break;
 
 	/* digitalRaw	*/
 	case 0x0F:{
-		Kirim = digitalRaw(TH2, TH1, TH0);
+		Kirim = digitalRaw(TF2, TF1, TF0);
 	}break;
 
 	/* Decision	*/
 	case 0x10:{
-		dRaw = digitalRaw(TH2, TH1, TH0);
+		dRaw = digitalRaw(TF2, TF1, TF0);
 		Kirim = dicision(dRaw);
 	}break;
 	}
@@ -203,19 +203,19 @@ uint8_t digitalRaw(uint16_t Thrs2, uint16_t Thrs1, uint16_t Thrs0){
 	myADC_read(2, 0, 0, &SF2);
 
 	/* Compare between SF0 and Thrs0	*/
-	if(SF0 > 500)
+	if(SF0 > Thrs0)
 		resultDigital |= (1<<0);
 	else
 		resultDigital &= ~(1<<0);
 
 	/* Compare between SF0 and Thrs0	*/
-	if(SF1 > 500)
+	if(SF1 > Thrs1)
 		resultDigital |= (1<<1);
 	else
 		resultDigital &= ~(1<<1);
 
 	/* Compare between SF0 and Thrs0	*/
-	if(SF2 > 500)
+	if(SF2 > Thrs2)
 		resultDigital |= (1<<2);
 	else
 		resultDigital &= ~(1<<2);
@@ -226,14 +226,28 @@ uint8_t dicision(uint8_t in_digitalRaw){
 	uint8_t result;
 	if(in_digitalRaw == 0x01)
 		result='R';
-	if(in_digitalRaw == 0x04)
+	else if(in_digitalRaw == 0x04)
 		result='L';
-	if(in_digitalRaw == 0x02)
+	else if(in_digitalRaw == 0x02)
 		result='I';
-	if(in_digitalRaw == 0x07)
+	else if(in_digitalRaw == 0x07)
 		result='+';
-	if(in_digitalRaw == 0x05)
+	else if(in_digitalRaw == 0x05)
 		result='T';
+	else
+		result='U';
 
 	return result;
+}
+
+void calibrateAll(void){
+	calibrate_S0(0,0,0);
+	calibrate_S1(0,0,0);
+	calibrate_S2(0,0,0);
+}
+void calibrateAuto(void){
+	calibrate_S0(0,0,0);
+	calibrate_S1(0,0,0);
+	calibrate_S2(0,0,0);
+
 }
